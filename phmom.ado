@@ -1,0 +1,55 @@
+/* Stata function for 
+Ryo Okui and Takahide Yanagi. Kernel Estimation for Panel Data       
+   with Heterogeneous Dynamics. 2019.
+Ryo Okui and Takahide Yanagi. Panel Data Analysis with Heterogeneous 
+   Dynamics. 2019. */
+   
+/*
+Note : 
+    1. Data should be xtset.
+    2. Data should be strongly balanced.
+
+Contents :
+    1. Empirical CDF Estimaton    : phecdf
+	2. Moment Estimation          : phmoment
+	3. Kernel Density Estimation  : phkd
+
+*/
+
+/// 2. Moment Estimation
+
+capture prog drop phmoment
+program define phmoment, eclass
+    version 14.0
+	syntax varlist(numeric) [if] [in] [, method(string) boot(integer 200) acov_order(integer 0) acor_order(integer 1) ]
+	
+	quietly xtset
+	marksample touse
+	
+	if ("`r(balanced)'" != "strongly balanced"){
+	display as error "Error: The given data are not strongly balanced."
+	exit
+	}
+	
+	mata: data = st_data(., "`varlist'")
+	mata: T = (`r(tmax)' - `r(tmin)')/`r(tdelta)' + 1
+	mata: data = colshape(data, T)
+	mata: acov_order = `acov_order'
+	mata: acor_order = `acor_order'
+	mata: B = `boot'
+	
+	if ("`method'" == "hpj"){
+	    mata: m_hpjmoment(data, acov_order, acor_order, B)
+	}
+	else if ("`method'" == "toj"){
+	    mata: m_tojmoment(data, acov_order, acor_order, B)
+	}
+	else {
+	    mata: m_nemoment(data, acov_order, acor_order, B)
+	}
+	
+	ereturn matrix ci = ci
+	ereturn matrix se = se
+	ereturn matrix est = est
+
+end
