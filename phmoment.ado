@@ -27,8 +27,8 @@ program define phmoment, eclass
 	marksample touse
 	
 	if ("`r(balanced)'" != "strongly balanced"){
-	display as error "Error: The given data are not strongly balanced."
-	exit
+	    display as error "error: The given data is not xtset or strongly balanced."
+	    exit
 	}
 	
 	mata: data = st_data(., "`varlist'")
@@ -44,8 +44,12 @@ program define phmoment, eclass
 	else if ("`method'" == "toj"){
 	    mata: m_tojmoment(data, acov_order, acor_order, B)
 	}
-	else {
+	else if ("`method'" == "naive"){
 	    mata: m_nemoment(data, acov_order, acor_order, B)
+	}
+	else{
+	    display as error "error: The name of method is not correctly specified."
+            exit
 	}
 	
 	ereturn matrix ci = ci
