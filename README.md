@@ -24,4 +24,5 @@ Ryo Okui and Takahide Yanagi. Panel Data Analysis with Heterogeneous Dynamics. 2
 # illustration
 
  panelinit.dta : panel data representation of init.dta
+ 
  illustration.do : illustration of each function.
