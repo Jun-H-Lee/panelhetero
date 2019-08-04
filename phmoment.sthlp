@@ -37,6 +37,14 @@
 {it:correlation between mean and autocovariance, correlation between mean and autocorrelation and correlation between autocovariance and autocorrelation})
 when the panel data exhibits heterogeneity across its cross-sectional units.
 
+{marker dependencies}
+{title:Dependencies}
+
+{pstd}
+{cmd:phecdf} requires the {cmd:moremata}
+package. Type
+
+        {com}. {net "describe moremata, from(http://fmwww.bc.edu/repec/bocode/m/)":ssc describe moremata}{txt}
 
 {marker options}{...}
 {title:Options}
