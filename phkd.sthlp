@@ -33,6 +33,20 @@
 {pstd}
 {cmd:phkd} performs kernel density estimation when the panel data exhibits heterogeneity across its cross-sectional units.
 
+{marker dependencies}
+{title:Dependencies}
+
+{pstd}
+{cmd:phkd} requires the {cmd:moremata}
+package. Type
+
+        {com}. {net "describe moremata, from(http://fmwww.bc.edu/repec/bocode/m/)":ssc describe moremata}{txt}
+		
+{phang}		
+{cmd:phkd} requires the {cmd:kdens}
+package. Type
+
+        {com}. {net "describe kdens, from(http://fmwww.bc.edu/repec/bocode/k/)":ssc describe kdens}{txt}
 
 {marker options}{...}
 {title:Options}
