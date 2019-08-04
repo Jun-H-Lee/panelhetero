@@ -31,6 +31,12 @@ program define phmoment, eclass
 	    exit
 	}
 	
+	capture mata: mm_kern("e",0)
+	if (_rc != 0) {
+	    display as error "error: Cannot find the package MOREMATA." _newline `"The package can be installed with the command "ssc install moremata"."'
+	    exit
+	}
+	
 	mata: data = st_data(., "`varlist'")
 	mata: T = (`r(tmax)' - `r(tmin)')/`r(tdelta)' + 1
 	mata: data = colshape(data, T)
