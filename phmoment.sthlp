@@ -41,7 +41,7 @@ when the panel data exhibits heterogeneity across its cross-sectional units.
 {title:Dependencies}
 
 {pstd}
-{cmd:phecdf} requires the {cmd:moremata}
+{cmd:phmoment} requires the {cmd:moremata}
 package. Type
 
         {com}. {net "describe moremata, from(http://fmwww.bc.edu/repec/bocode/m/)":ssc describe moremata}{txt}
