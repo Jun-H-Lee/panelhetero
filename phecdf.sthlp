@@ -2,7 +2,7 @@
 
 {title:Title}
 
-{p2colset 9 23 20 2}{...}
+{p2colset 9 19 20 2}{...}
 {p2col :{opt phecdf} {hline 2}}Empirical CDF Estimation for Heterogeneous Panel Data{p_end}
 {p2colreset}{...}
 
@@ -21,7 +21,10 @@
 {synopt :{opt acor_order(#)}}set order of the autocorrelation; default is 1.{p_end}
 
 {syntab:Method}
-{synopt :{opth method(string)}}{it:string} must be one of three estimation method {it:"naive", "hpj", "toj"}.{p_end}
+{synopt :{opth method:(strings:string)}}{it:string} must be one of three estimation methods {it:"naive", "hpj", "toj"}.{p_end}
+
+{syntab:Graph}
+{synopt :{opth graph:(strings:string)}}{it:string} must be a list consisting of {it:mean, acov, acor}; default is "mean acov acor".{p_end}
 {synoptline}
 
 {p 4 6 2}{it:panelvar} must be {help xtset} and strongly balanced.{p_end}
@@ -31,7 +34,7 @@
 {title:Description}
 
 {pstd}
-{cmd:phkd} performs estimation of empirical distribution function when the panel data exhibits heterogeneity across its cross-sectional units.
+{cmd:phecdf} performs estimation of empirical distribution function when the panel data exhibits heterogeneity across its cross-sectional units.
 
 {marker dependencies}
 {title:Dependencies}
@@ -41,7 +44,7 @@
 package. Type
 
         {com}. {net "describe moremata, from(http://fmwww.bc.edu/repec/bocode/m/)":ssc describe moremata}{txt}
-        
+
 
 {marker options}{...}
 {title:Options}
@@ -58,13 +61,20 @@ package. Type
 {dlgtab:Method}
 
 {phang}
-{opth method:(strings:string)} specifies how the densities of moments are estimated. 
+{opth method:(strings:string)} specifies how the empirical CDFs of moments are estimated. 
 {it:"naive"} stands for naive estimation without bias-correction, {it:"hpj"} for half panel jackknife and {it:"toj"} for third order jackknife.
+
+{dlgtab:Graph}
+
+{phang}
+{opth graph:(strings:string)} specifies which graphs of empirical CDFs to be plotted. 
+
 
 {marker results}
 {title:Results} 
 
-{pstd}{cmd:phecdf} gives three plots of empirical CDFs for mean, autocovariance and autocorrelation.
+{pstd}{cmd:phecdf} gives plots of empirical CDFs of mean, autocovariance and autocorrelation chosen by users.
+
 
 {marker example}{...}
 {title:Examples:  empirical CDF estimation}
@@ -73,8 +83,8 @@ package. Type
 {phang2}{cmd:. webuse pig}{p_end}
 {phang2}{cmd:. xtset id week}{p_end}
 
-{pstd}Estimate the empirical CDFs of the variable {it:weight} about mean, autocovariance of order 1 and autocorrelation of order 2 using naive estimation.{p_end}
-{phang2}{cmd:. phecdf weight, method("naive") acov_order(1) acor_order(2)}{p_end}
+{pstd}Estimate the empirical CDFs of the variable {it:weight} about autocovariance of order 1 and autocorrelation of order 2 using naive estimation.{p_end}
+{phang2}{cmd:. phecdf weight, method("naive") acov_order(1) acor_order(2) graph("acov acor")}{p_end}
 
 
 {marker reference}{...}
