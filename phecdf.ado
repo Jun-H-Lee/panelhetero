@@ -21,7 +21,7 @@ Contents :
 capture prog drop phecdf
 program define phecdf, eclass
     version 14.0
-	syntax varlist(numeric) [if] [in] [, method(string) acov_order(integer 0) acor_order(integer 1) ]
+	syntax varlist(numeric) [if] [in] [, method(string) acov_order(integer 0) acor_order(integer 1) graph(string)]
 	
 	capture drop mean_ecdf
 	capture drop acov_ecdf
@@ -61,7 +61,7 @@ program define phecdf, eclass
 	else if ("`method'" == "toj"){
 	    mata: m_tojecdf(data, acov_order, acor_order)
 	}
-	else if ("`method'" == "sim"){
+	else if ("`method'" == "naive"){
 	    mata: m_neecdf(data, acov_order, acor_order)
 	}
 	else{
@@ -69,24 +69,36 @@ program define phecdf, eclass
 		exit
 	}
 	
-    graph twoway line mean_ecdf mean_grid, ytitle("Cumulative Distribution") ///
-	                  xtitle("Mean") title("Empirical CDF Estimation for Mean")
-	graph rename meanecdf
-	
-	if (`acov_order' == 0){
-	    graph twoway line acov_ecdf acov_grid, ytitle("Cumulative Distribution") ///
-	                  xtitle("Variance") title("Empirical CDF Estimation for Variance")
-	    graph rename acovecdf
-	}
-	else{
-	    graph twoway line acov_ecdf acov_grid, ytitle("Cumulative Distribution") ///
-	                  xtitle("Autocovariance") title("Empirical CDF Estimation for Autocovariance of Order `acov_order'")
-	    graph rename acovecdf
+	if ("`graph'" == ""){
+	    local graph "mean acov acor"
 	}
 	
-	graph twoway line acor_ecdf acor_grid, ytitle("Cumulative Distribution") ///
-	                  xtitle("Autocorrelation") title("Empirical CDF Estimation for Autocorrelation of Order `acor_order'")
-	graph rename acorecdf
+	foreach i in `graph'{
+	    if ("`i'" == "mean"){
+            graph twoway line mean_ecdf mean_grid, ytitle("Cumulative Distribution") ///
+	                          xtitle("Mean") title("Empirical CDF Estimation for Mean")
+	        graph rename meanecdf
+	    }
+		
+		if ("`i'" == "acov"){
+	        if (`acov_order' == 0){
+	            graph twoway line acov_ecdf acov_grid, ytitle("Cumulative Distribution") ///
+	                          xtitle("Variance") title("Empirical CDF Estimation for Variance")
+	            graph rename acovecdf
+	        }
+	        else{
+	            graph twoway line acov_ecdf acov_grid, ytitle("Cumulative Distribution") ///
+	                          xtitle("Autocovariance") title("Empirical CDF Estimation for Autocovariance of Order `acov_order'")
+	            graph rename acovecdf
+	        }
+		}
+		
+		if ("`i'" == "acor"){
+	        graph twoway line acor_ecdf acor_grid, ytitle("Cumulative Distribution") ///
+	                          xtitle("Autocorrelation") title("Empirical CDF Estimation for Autocorrelation of Order `acor_order'")
+	        graph rename acorecdf
+	    }
+	}
 	
 	drop mean_ecdf acov_ecdf acor_ecdf mean_grid acov_grid acor_grid
     quietly keep in 1/`obs'
