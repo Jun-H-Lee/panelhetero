@@ -2,7 +2,7 @@
 
 {title:Title}
 
-{p2colset 9 23 20 2}{...}
+{p2colset 9 22 20 2}{...}
 {p2col :{opt phmoment} {hline 2}}Moments Estimation for Heterogeneous Panel Data{p_end}
 {p2colreset}{...}
 
@@ -22,7 +22,7 @@
 {synopt :{opt boot(#)}}set number of bootstrap replication; default is 200.{p_end}
 
 {syntab:Method}
-{synopt :{opth method(string)}}{it:string} must be one of three estimation method {it:"naive", "hpj", "toj"}.{p_end}
+{synopt :{opth method(string)}}{it:string} must be one of three estimation methods {it:"naive", "hpj", "toj"}.{p_end}
 {synoptline}
 
 {p 4 6 2}{it:panelvar} must be {help xtset} and strongly balanced.{p_end}
@@ -32,9 +32,9 @@
 {title:Description}
 
 {pstd}
-{cmd:phmoment} performs estimation of 9 moments({it:mean of mean, mean of autocovariance, mean of autocorrelation,}
-{it:variance of mean, variance of autocovariance, variance of autocorrelation,}
-{it:correlation between mean and autocovariance, correlation between mean and autocorrelation and correlation between autocovariance and autocorrelation})
+{cmd:phmoment} performs estimation of 9 moments({it:1.mean of mean, 2.mean of autocovariance, 3.mean of autocorrelation,}
+{it:4.variance of mean, 5.variance of autocovariance, 6 variance of autocorrelation,}
+{it:7.correlation between mean and autocovariance, 8.correlation between mean and autocorrelation, and 9.correlation between autocovariance and autocorrelation})
 when the panel data exhibits heterogeneity across its cross-sectional units.
 
 {marker dependencies}
@@ -45,7 +45,7 @@ when the panel data exhibits heterogeneity across its cross-sectional units.
 package. Type
 
         {com}. {net "describe moremata, from(http://fmwww.bc.edu/repec/bocode/m/)":ssc describe moremata}{txt}
-
+		
 {marker options}{...}
 {title:Options}
 
@@ -79,8 +79,8 @@ package. Type
 {synopt:{cmd:e(est)}} estimates for the moments.{p_end}
 
 {pstd}
-All these are ordered by {it:mean of mean, mean of autocovariance, mean of autocorrelation, variance of mean, variance of autocovariance, variance of autocorrelation,}
-{it:correlation between mean and autocovariance, correlation between mean and autocorrelation and correlation between autocovariance and autocorrelation.}{p_end}
+All these are ordered by {it:1. mean of mean, 2. mean of autocovariance, 3. mean of autocorrelation, 4. variance of mean, 5. variance of autocovariance, 6. variance of autocorrelation,}
+{it:7. correlation between mean and autocovariance, 8. correlation between mean and autocorrelation, and 9. correlation between autocovariance and autocorrelation.}{p_end}
 
 
 {marker example}{...}
