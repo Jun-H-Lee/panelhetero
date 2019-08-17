@@ -2,7 +2,7 @@
 
 {title:Title}
 
-{p2colset 9 23 20 2}{...}
+{p2colset 9 17 20 2}{...}
 {p2col :{opt phkd} {hline 2}}Kernel Density Estimation for Heterogeneous Panel Data{p_end}
 {p2colreset}{...}
 
@@ -21,7 +21,14 @@
 {synopt :{opt acor_order(#)}}set order of the autocorrelation; default is 1.{p_end}
 
 {syntab:Method}
-{synopt :{opth method(string)}}{it:string} must be one of three estimation method {it:"naive", "hpj", "toj"}.{p_end}
+{synopt :{opth method:(strings:string)}}{it:string} must be one of three estimation method {it:"naive", "hpj", "toj"}.{p_end}
+{synopt :{opth rb:(strings:string)}}{it:string} must be either "on" or "off"; default is "on". {p_end}
+
+
+{syntab:Graph}
+{synopt :{opth graph:(strings:string)}}{it:string} must be a list consisting of {it:mean, acov, acor}; default is "mean acov acor".{p_end}
+{synopt :{opth ci:(strings:string)}}{it:string} must be either "on" or "off"; default is "on".{p_end}
+
 {synoptline}
 
 {p 4 6 2}{it:panelvar} must be {help xtset} and strongly balanced.{p_end}
@@ -31,7 +38,18 @@
 {title:Description}
 
 {pstd}
-{cmd:phkd} performs kernel density estimation when the panel data exhibits heterogeneity across its cross-sectional units.
+{cmd:phkd} performs kernel density estimation when the panel data exhibits heterogeneity across its cross-sectional units. 
+Densities of moments(mean, acov, acor) are calculated by usual kernel density estimation 
+using gaussian kernel with plug-in bandwidth on equally spaced grid of size 200.
+
+{phang}
+When {cmd:rb} is "on", estimation is done by robust bias-corrected method using the package 
+{browse "https://sites.google.com/site/nppackages/nprobust/":{it:nprobust}.} 
+For the robust bias-corrected method, rho set to be 1, epanechnikov kernel, and IMSE plug-in bandwidths are used.
+
+{phang}
+Split-panel jackknife {cmd:method} like {it:naive, hpj, toj} are described in
+{browse "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3128885":{it:Kernel Estimation for Panel Data with Heterogeneous Dynamics}.}
 
 {marker dependencies}
 {title:Dependencies}
@@ -47,6 +65,12 @@ package. Type
 package. Type
 
         {com}. {net "describe kdens, from(http://fmwww.bc.edu/repec/bocode/k/)":ssc describe kdens}{txt}
+
+{phang}
+{cmd:phkd} requires the {cmd:nprobust}
+package. Type
+
+        {cmd:net install nprobust, from(https://sites.google.com/site/nppackages/nprobust/stata) replace}
 
 {marker options}{...}
 {title:Options}
@@ -66,10 +90,22 @@ package. Type
 {opth method:(strings:string)} specifies how the densities of moments are estimated. 
 {it:"naive"} stands for naive estimation without bias-correction, {it:"hpj"} for half panel jackknife and {it:"toj"} for third order jackknife.
 
+{phang}
+{opth rb:(strings:string)} {it:string} chosen to be "on" or "off" specifies whether to implement robust bias-corrected procedure or not.
+
+{dlgtab:Graph}
+
+{phang}
+{opth graph:(strings:string)} specifies which graphs of densities to be plotted. 
+
+{phang}
+{opth ci:(strings:string)} specifies whether to present confidence intervals on graphs or not
+
 {marker results}
 {title:Results} 
 
-{pstd}{cmd:phkd} gives three plots of densities for mean, autocovariance and autocorrelation.
+{pstd}{cmd:phkd} gives plots of densities and confidence intervals for mean, autocovariance and autocorrelation chosen by users.
+
 
 {marker example}{...}
 {title:Examples:  kernel density estimation}
@@ -78,8 +114,8 @@ package. Type
 {phang2}{cmd:. webuse pig}{p_end}
 {phang2}{cmd:. xtset id week}{p_end}
 
-{pstd}Kernel Estimate the variable {it:weight} about mean, autocovariance of order 2 and autocorrelation of order 3 using Half Panel Jackknife{p_end}
-{phang2}{cmd:. phkd weight, method("hpj") acov_order(2) acor_order(3)}{p_end}
+{pstd}Kernel Estimate the variable {it:weight} about mean and autocorrelation of order 3 using half panel jackknife{p_end}
+{phang2}{cmd:. phkd weight, method("hpj") ci("off") rb("off") acor_order(3) graph("mean acor")}{p_end}
 
 
 {marker references}{...}
