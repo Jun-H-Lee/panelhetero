@@ -21,29 +21,20 @@ Contents :
 capture prog drop phkd
 program define phkd, eclass
     version 14.0
-	syntax varlist(numeric) [if] [in] [, method(string) acov_order(integer 0) acor_order(integer 1) rb(string) ci(string) graph(string)]
+	syntax varlist(numeric) [if] [in] [, method(string) acov_order(integer 0) acor_order(integer 1) ci(string) graph(string)]
 	
 	capture drop mean_dest
 	capture drop acov_dest
 	capture drop acor_dest
-	capture drop mean_rb_dest
-	capture drop acov_rb_dest
-	capture drop acor_rb_dest
 	capture drop mean_grid
 	capture drop acov_grid
 	capture drop acor_grid
-	capture drop mean_us_UCI
-	capture drop acov_us_UCI
-	capture drop acor_us_UCI
-	capture drop mean_us_LCI
-	capture drop acov_us_LCI
-	capture drop acor_us_LCI
-	capture drop mean_rb_UCI
-	capture drop acov_rb_UCI
-	capture drop acor_rb_UCI
-	capture drop mean_rb_LCI
-	capture drop acov_rb_LCI
-	capture drop acor_rb_LCI
+	capture drop mean_UCI
+	capture drop acov_UCI
+	capture drop acor_UCI
+	capture drop mean_LCI
+	capture drop acov_LCI
+	capture drop acor_LCI
 	capture graph drop meandest
 	capture graph drop vardest
 	capture graph drop acovdest
@@ -69,19 +60,6 @@ program define phkd, eclass
 	if (_rc != 0) {
 		display as error "error: Cannot find the package KDENS." _newline `"The package can be installed with the command "net "describe kdens, from(http://fmwww.bc.edu/repec/bocode/k/)":ssc describe kdens"."'
 	    exit
-	}
-	
-	capture mata: nprobust_K_fun(0, "epa")
-	if (_rc != 0) {
-		display as error "error: Cannot find the package NPROBUST." _newline `"The package can be installed with the command "ssc install kdens"."'
-	    exit
-	}
-	
-	if ("`rb'"==""){
-	    local rb "on"
-	}
-	if (("`rb'"!="on")&("`rb'"!="off")){
-	    display as error "error: rb should be defined as "on" or "off"
 	}
 	
 	if ("`ci'"==""){
@@ -118,23 +96,12 @@ program define phkd, eclass
 	
 	foreach i in `graph'{
 	    if ("`i'" == "mean"){
-		    if(("`rb'" == "on")&("`ci'" == "on")){
-                graph twoway rarea mean_rb_UCI mean_rb_LCI mean_grid, color(gs14) || line mean_rb_dest mean_grid, ytitle("Density") ///
-	                              xtitle("Mean") title("Kernel Density Estimation for Mean") xlabel(minmax)  ///
-								  legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
-	            graph rename meandest
-			}
-			else if(("`rb'" != "on")&("`ci'" == "on")){
-			    graph twoway rarea mean_us_UCI mean_us_LCI mean_grid, color(gs14) || line mean_dest mean_grid, ytitle("Density") ///
+		    if("`ci'" == "on"){
+			    graph twoway rarea mean_UCI mean_LCI mean_grid, color(gs14) || line mean_dest mean_grid, ytitle("Density") ///
 	                              xtitle("Mean") title("Kernel Density Estimation for Mean") xlabel(minmax)  ///
 								  legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
 	            graph rename meandest
 			
-			}
-			else if(("`rb'" == "on")&("`ci'" != "on")){
-			    graph twoway line mean_rb_dest mean_grid, ytitle("Density") ///
-	                              xtitle("Mean") xlabel(minmax) title("Kernel Density Estimation for Mean")
-	            graph rename meandest
 			}
 			else{
 			    graph twoway line mean_dest mean_grid, ytitle("Density") ///
@@ -145,19 +112,9 @@ program define phkd, eclass
 		
 		if ("`i'" == "acov"){
 	        if (`acov_order' == 0){
-	            if(("`rb'" == "on")&("`ci'" == "on")){
-                    graph twoway rarea acov_rb_UCI acov_rb_LCI acov_grid, color(gs14) || line acov_rb_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Variance") title("Kernel Density Estimation for Variance") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
-	                graph rename vardest
-			    }
-			    else if(("`rb'" != "on")&("`ci'" == "on")){
-			        graph twoway rarea acov_us_UCI acov_us_LCI acov_grid, color(gs14) || line acov_dest acov_grid, ytitle("Density") ///
+			    if("`ci'" == "on"){
+			        graph twoway rarea acov_UCI acov_LCI acov_grid, color(gs14) || line acov_dest acov_grid, ytitle("Density") ///
 	                              xtitle("Variacne") title("Kernel Density Estimation for Variance") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
-	                graph rename vardest
-			    }
-			    else if(("`rb'" == "on")&("`ci'" != "on")){
-			        graph twoway line acov_rb_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Variance") title("Kernel Density Estimation for Variance")
 	                graph rename vardest
 			    }
 			    else{
@@ -167,19 +124,9 @@ program define phkd, eclass
 			    }
 	        }
 	        else{
-	            if(("`rb'" == "on")&("`ci'" == "on")){
-                    graph twoway rarea acov_rb_UCI acov_rb_LCI acov_grid, color(gs14) || line acov_rb_dest acov_grid, ytitle("Density") ///
+			    if("`ci'" == "on"){
+			        graph twoway rarea acov_UCI acov_LCI acov_grid, color(gs14) || line acov_dest acov_grid, ytitle("Density") ///
 	                              xtitle("Autocovariance") title("Kernel Density Estimation for Autocovariance of order `acov_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
-	                graph rename acovdest
-			    }
-			    else if(("`rb'" != "on")&("`ci'" == "on")){
-			        graph twoway rarea acov_us_UCI acov_us_LCI acov_grid, color(gs14) || line acov_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Autocovariance") title("Kernel Density Estimation for Autocovariance of order `acov_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
-	                graph rename acovdest
-			    }
-			    else if(("`rb'" == "on")&("`ci'" != "on")){
-			        graph twoway line acov_rb_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Autocovariance") title("Kernel Density Estimation for Autocovariance of order `acov_order'")
 	                graph rename acovdest
 			    }
 			    else{
@@ -191,21 +138,11 @@ program define phkd, eclass
 		}
 		
 		if ("`i'" == "acor"){
-	        if(("`rb'" == "on")&("`ci'" == "on")){
-                graph twoway rarea acor_rb_UCI acor_rb_LCI acor_grid, color(gs14) || line acor_rb_dest acor_grid, ytitle("Density") ///
-	                              xtitle("Autocorrelation") title("Kernel Density Estimation for Autocorrelation of order `acor_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
-	            graph rename acordest
-			}
-			else if(("`rb'" != "on")&("`ci'" == "on")){
-			    graph twoway rarea acor_us_UCI acor_us_LCI acor_grid, color(gs14) || line acor_dest acor_grid, ytitle("Density") ///
+			if("`ci'" == "on"){
+			    graph twoway rarea acor_UCI acor_LCI acor_grid, color(gs14) || line acor_dest acor_grid, ytitle("Density") ///
 	                              xtitle("Autocorrelation") title("Kernel Density Estimation for Autocorrelation of order `acor_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
 	            graph rename acordest
 			
-			}
-			else if(("`rb'" == "on")&("`ci'" != "on")){
-			    graph twoway line acor_rb_dest acor_grid, ytitle("Density") ///
-	                              xtitle("Autocorrelation") title("Kernel Density Estimation for Autocorrelation of order `acor_order'")
-	            graph rename acordest
 			}
 			else{
 			    graph twoway line acor_dest acor_grid, ytitle("Density") ///
@@ -215,9 +152,8 @@ program define phkd, eclass
 	    }
 	}
 	
-	drop mean_dest acov_dest acor_dest mean_rb_dest acov_rb_dest acor_rb_dest mean_grid acov_grid acor_grid
-	drop mean_rb_UCI acov_rb_UCI acor_rb_UCI mean_rb_LCI acov_rb_LCI acor_rb_LCI
-	drop mean_us_UCI acov_us_UCI acor_us_UCI mean_us_LCI acov_us_LCI acor_us_LCI
+	drop mean_dest acov_dest acor_dest mean_grid acov_grid acor_grid
+	drop mean_UCI acov_UCI acor_UCI mean_LCI acov_LCI acor_LCI
 	quietly keep in 1/`obs'
 	
 end
