@@ -3446,10 +3446,6 @@ function hpjkdest1 (x, X, X1, X2, h) {
 	kest = 2 * k - (k1 + k2) / 2
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - hpjest^2))
 	
-	if (hpjest < 0) {
-	    hpjest = 0
-	}
-	
 	return((hpjest, se))
 }
 
@@ -3474,10 +3470,6 @@ function hpjkdest2 (x, X, X1, X2, X3, X4, h) {
     hpjest = 2 * est - (est1 + est2 + est3 + est4) / 4
 	kest = 2 * k - (k1 + k2 + k3 + k4) / 4
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - hpjest^2))
-	
-	if (hpjest < 0) {
-	    hpjest = 0
-	}
 	
 	return((hpjest, se))
 }
@@ -3553,19 +3545,22 @@ function m_hpjkd (data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 			mean_se[i] = k[2]
 		    mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 		    k = hpjkdest1(acov_grid[i], acov_est, acov_est1, acov_est2, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 		
 		    k = hpjkdest1(acor_grid[i], acor_est, acor_est1, acor_est2, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 	    }    
 	}
 	else {
@@ -3612,19 +3607,22 @@ function m_hpjkd (data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 		    mean_se[i] = k[2]
 			mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-			mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+			mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 		    k = hpjkdest2(acov_grid[i], acov_est, acov_est1, acov_est2, acov_est3, acov_est4, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 		    k = hpjkdest2(acor_grid[i], acor_est, acor_est1, acor_est2, acor_est3, acor_est4, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
+		    acor_UCI[i] = max((acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = mac((0,acor_dest[i]))
 	    }  
 	}
     	
@@ -3700,11 +3698,6 @@ function tojkdest0(x, X, X21, X22, X31, X32, X33, h) {
     tojest = 3.536 * est - 4.072 * (est21 + est22) / 2 + 1.536 * (est31 + est32 + est33) / 3
 	kest = 3.536 * k - 4.072 * (k21 + k22) / 2 + 1.536 * (est31 + est32 + est33) / 3
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
-	
-	// correction to ensure non-negative estimates
-	if(tojest < 0){
-		tojest = 0
-	}
   
   return((tojest, se))
 }
@@ -3768,10 +3761,6 @@ function tojkdest1(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37, 
 	kest = 3.536 * k - 4.072 * (k21 + k22 + k23 + k24) / 4 + 1.536 * (k31 + k32 + k33 + k34 + k35 + k36 + k37 + k38 + k39) / 9
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
 	
-	// correction to ensure non-negative estimates
-	if(tojest < 0){
-		tojest = 0
-	}
   
 	return((tojest, se))
 }
@@ -3830,11 +3819,6 @@ function tojkdest2(x, X, X21, X22, X31, X32, X33, X34, X35, X36, X37, X38, X39, 
 	kest = 3.536 * k - 4.072 * (k21 + k22) / 2 + 1.536 * (k31 + k32 + k33 + k34 + k35 + k36 + k37 + k38 + k39) / 9
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
 	
-	// correction to ensure non-negative estimates
-	if(tojest < 0){
-		tojest = 0
-	}
-  
 	return((tojest, se))
 }
 
@@ -3878,11 +3862,6 @@ function tojkdest3(x, X, X21, X22, X23, X24, X31, X32, X33, h) {
 	tojest = 3.536 * est - 4.072 * (est21 + est22 + est23 + est24) / 4 + 1.536 * (est31 + est32 + est33) / 3
 	kest = 3.536 * k - 4.072 * (k21 + k22 + k23 + k24) / 4 + 1.536 * (k31 + k32 + k33) / 3
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
-	
-	// correction to ensure non-negative estimates
-	if(tojest < 0){
-		tojest = 0
-	}
 
     return((tojest, se))
 }
@@ -3940,11 +3919,6 @@ function tojkdest4(x, X, X21, X22, X31, X32, X33, X34, X35, X36, X37, X38, X39, 
 	kest = 3.536 * k - 4.072 * (k21 + k22) / 2 + 1.536 * (k31 + k32 + k33 + k34 + k35 + k36 + k37 + k38 + k39) / 9
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
 	
-	// correction to ensure non-negative estimates
-	if(tojest < 0){
-		tojest = 0
-	}
-  
 	return((tojest, se))
 }
 
@@ -4008,11 +3982,6 @@ function tojkdest5(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37, 
 	kest = 3.536 * k - 4.072 * (k21 + k22 + k23 + k24) / 4 + 1.536 * (k31 + k32 + k33 + k34 + k35 + k36 + k37 + k38 + k39) / 9
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
 	
-	// correction to ensure non-negative estimates
-	if(tojest < 0){
-		tojest = 0
-	}
-
 	return((tojest, se))
 }
 
@@ -4109,20 +4078,22 @@ function m_tojkd(data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 		    mean_se[i] = k[2]
 		    mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 			k = tojkdest0(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 			k = tojkdest0(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
-			
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 		}    	
 	} else if (mod(S,6)==1){
 
@@ -4233,19 +4204,22 @@ function m_tojkd(data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 			mean_se[i] = k[2]
 			mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
-			acov_dest[i] = tojkdest1(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
+			k = tojkdest1(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 			k = tojkdest1(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 		}
 		
 	} else if (mod(S,6)==2){
@@ -4343,19 +4317,23 @@ function m_tojkd(data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 		    mean_se[i] = k[2]
 		    mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 			k = tojkdest2(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 			k = tojkdest2(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
+			
 		}
 		
 	} else if (mod(S,6) == 3) {
@@ -4425,19 +4403,22 @@ function m_tojkd(data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 		    mean_se[i] = k[2]
 		    mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 			k = tojkdest3(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 			k = tojkdest3(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 		}
 
 	} else if (mod(S,6)==4) {
@@ -4535,19 +4516,22 @@ function m_tojkd(data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 		    mean_se[i] = k[2]
 		    mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 			k = tojkdest4(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 			k = tojkdest4(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 		}
 		
 	} else {
@@ -4659,19 +4643,22 @@ function m_tojkd(data, acov_order, acor_order) {
 			mean_dest[i] = k[1]
 		    mean_se[i] = k[2]
 		    mean_LCI[i] = max((0,mean_dest[i] - 1.96 * mean_se[i]))
-		    mean_UCI[i] = mean_dest[i] + 1.96 * mean_se[i]
+		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
+			mean_dest[i] = max((0,mean_dest[i]))
 			
 			k = tojkdest5(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
-		    acov_UCI[i] = acov_dest[i] + 1.96 * acov_se[i]
+		    acov_UCI[i] = max((0,acov_dest[i] + 1.96 * acov_se[i]))
+			acov_dest[i] = max((0,acov_dest[i]))
 			
 			k = tojkdest5(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39, acor_bw)
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = acor_dest[i] + 1.96 * acor_se[i]	
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 		}
 	}
 	
