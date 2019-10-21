@@ -40,8 +40,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
   # initialization
   x <- y <- NULL
 
-  # handling error
-  error2(data = data, acov_order = acov_order, acor_order = acor_order)
+  # handling errors
+  error1(data = data, acov_order = acov_order, acor_order = acor_order, R = R)
 
   # omitting NA
   data <- na.omit(data)
