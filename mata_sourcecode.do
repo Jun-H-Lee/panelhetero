@@ -3622,7 +3622,7 @@ function m_hpjkd (data, acov_order, acor_order) {
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
 		    acor_UCI[i] = max((acor_dest[i] + 1.96 * acor_se[i]))
-			acor_dest[i] = mac((0,acor_dest[i]))
+			acor_dest[i] = max((0,acor_dest[i]))
 	    }  
 	}
     	
