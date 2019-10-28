@@ -61,8 +61,7 @@ neecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     estimate <- bootstrap$t0
 
     # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t - bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -81,8 +80,7 @@ neecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     estimate <- bootstrap$t0
 
     # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t - bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -102,8 +100,7 @@ neecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     estimate <- bootstrap$t0
 
     # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t - bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))

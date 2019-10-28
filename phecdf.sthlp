@@ -19,12 +19,14 @@
 {syntab:Order}
 {synopt :{opt acov_order(#)}}set order of the autocovariance; default is 0.{p_end}
 {synopt :{opt acor_order(#)}}set order of the autocorrelation; default is 1.{p_end}
+{synopt :{opt boot(#)}}set number of bootstrap replication; default is 200.{p_end}
 
 {syntab:Method}
 {synopt :{opth method:(strings:string)}}{it:string} must be one of three estimation methods {it:"naive", "hpj", "toj"}.{p_end}
 
 {syntab:Graph}
 {synopt :{opth graph:(strings:string)}}{it:string} must be a list consisting of {it:mean, acov, acor}; default is "mean acov acor".{p_end}
+{synopt :{opth ci:(strings:string)}}{it:string} must be either "on" or "off"; default is "on".{p_end}
 {synoptline}
 
 {p 4 6 2}{it:panelvar} must be {help xtset} and strongly balanced.{p_end}
@@ -57,6 +59,8 @@ package. Type
 {phang}
 {opt acor_order} positive integer {it:k} for the order of autocorrelation. The default is 1. 
 
+{phang}
+{opt boot} positive interger {it:k} for the number of bootstrap replication. The default is 200.
 
 {dlgtab:Method}
 
@@ -69,6 +73,8 @@ package. Type
 {phang}
 {opth graph:(strings:string)} specifies which graphs of empirical CDFs to be plotted. 
 
+{phang}
+{opth ci:(strings:string)} specifies whether to present confidence intervals on graphs or not
 
 {marker results}
 {title:Results} 
@@ -84,7 +90,7 @@ package. Type
 {phang2}{cmd:. xtset id week}{p_end}
 
 {pstd}Estimate the empirical CDFs of the variable {it:weight} about autocovariance of order 1 and autocorrelation of order 2 using naive estimation.{p_end}
-{phang2}{cmd:. phecdf weight, method("naive") acov_order(1) acor_order(2) graph("acov acor")}{p_end}
+{phang2}{cmd:. phecdf weight, method("naive") acov_order(1) acor_order(2) ci("on") boot(300) graph("acov acor")}{p_end}
 
 
 {marker reference}{...}

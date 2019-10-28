@@ -91,9 +91,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(mean_est, mean_est21, mean_est22, mean_est31, mean_est32, mean_est33) - x, statistic = toj0_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -111,9 +109,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33) - x, statistic = toj0_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -132,9 +128,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33) - x, statistic = toj0_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -289,9 +283,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(mean_est, mean_est21, mean_est22, mean_est23, mean_est24, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39) - x, statistic = toj1_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -309,9 +301,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39) - x, statistic = toj1_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -330,9 +320,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39) - x, statistic = toj1_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -481,9 +469,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(mean_est, mean_est21, mean_est22, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39) - x, statistic = toj2_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -501,9 +487,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39) - x, statistic = toj2_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -522,9 +506,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39) - x, statistic = toj2_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -657,9 +639,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(mean_est, mean_est21, mean_est22, mean_est23, mean_est24, mean_est31, mean_est32, mean_est33) - x, statistic = toj3_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -677,9 +657,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33) - x, statistic = toj3_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -698,9 +676,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33) - x, statistic = toj3_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -849,9 +825,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(mean_est, mean_est21, mean_est22, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39) - x, statistic = toj4_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -869,9 +843,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39) - x, statistic = toj4_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -890,9 +862,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39) - x, statistic = toj4_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -1050,9 +1020,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(mean_est, mean_est21, mean_est22, mean_est23, mean_est24, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39) - x, statistic = toj5_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -1070,9 +1038,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39) - x, statistic = toj5_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -1091,9 +1057,7 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     bootstrap <- boot(data = cbind(acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39) - x, statistic = toj5_boot, R = R)
     estimate <- bootstrap$t0
 
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))

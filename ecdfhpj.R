@@ -78,10 +78,7 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     # hpj estimation with bootstrap
     bootstrap <- boot(data = cbind(mean_est, mean_est1, mean_est2) - x, statistic = hpj1_boot, R = R)
     estimate <- bootstrap$t0
-
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -98,10 +95,7 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     # hpj estimation with bootstrap
     bootstrap <- boot(data = cbind(acov_est, acov_est1, acov_est2) - x, statistic = hpj1_boot, R = R)
     estimate <- bootstrap$t0
-
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -119,10 +113,7 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     # hpj estimation with bootstrap
     bootstrap <- boot(data = cbind(acor_est, acor_est1, acor_est2) - x, statistic = hpj1_boot, R = R)
     estimate <- bootstrap$t0
-
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -247,10 +238,7 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     # hpj estimation with bootstrap
     bootstrap <- boot(data = cbind(mean_est, mean_est1, mean_est2, mean_est3, mean_est4) - x, statistic = hpj2_boot, R = R)
     estimate <- bootstrap$t0
-
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -267,10 +255,7 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     # hpj estimation with bootstrap
     bootstrap <- boot(data = cbind(acov_est, acov_est1, acov_est2, acov_est3, acov_est4) - x, statistic = hpj2_boot, R = R)
     estimate <- bootstrap$t0
-
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))
@@ -288,10 +273,7 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     # hpj estimation with bootstrap
     bootstrap <- boot(data = cbind(acor_est, acor_est1, acor_est2, acor_est3, acor_est4) - x, statistic = hpj2_boot, R = R)
     estimate <- bootstrap$t0
-
-    # standard error
-    temp <- bootstrap$t- mean(bootstrap$t)
-    se <- sqrt(mean(temp * temp))
+    temp <- bootstrap$t- bootstrap$t0
 
     # confidence interval
     quantile <- apply(temp, MARGIN = 2, quantile, probs = c(0.025, 0.975))

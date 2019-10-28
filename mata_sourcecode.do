@@ -55,10 +55,12 @@ function m_freq(x, X){
 }
 
 // 2.1. Naive Estimation 
-function m_neecdf(data, acov_order, acor_order) {
+
+
+function m_neecdf(data, acov_order, acor_order, B) {
     N = rows(data)
 	S = cols(data)
-	grid = 400
+	grid = 100
 	
 	mean_est = J(N, 1, 0)
 	acov_est = J(N, 1, 0)
@@ -81,11 +83,36 @@ function m_neecdf(data, acov_order, acor_order) {
 	mean_ecdf = J(grid, 1, 0)
 	acov_ecdf = J(grid, 1, 0)
 	acor_ecdf = J(grid, 1, 0)
+	
+	mean_UCI = J(grid, 1, 0)
+	acov_UCI = J(grid, 1, 0)
+	acor_UCI = J(grid, 1, 0)
+	
+    mean_LCI = J(grid, 1, 0)
+	acov_LCI = J(grid, 1, 0)
+	acor_LCI = J(grid, 1, 0)
 
 	for (i=1; i<=grid; i++) {
 	    mean_ecdf[i] = m_freq(mean_grid[i], mean_est)
 	    acov_ecdf[i] = m_freq(acov_grid[i], acov_est)
 		acor_ecdf[i] = m_freq(acor_grid[i], acor_est)
+		
+		estimate_boot = J(B, 3, 0)
+	    for (b = 1; b <= B; b++) {
+		    index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		    estimate_boot[b,1] = m_freq(mean_grid[i], mean_est[index_boot]) - mean_ecdf[i]
+			estimate_boot[b,2] = m_freq(acov_grid[i], acov_est[index_boot]) - acov_ecdf[i]
+			estimate_boot[b,3] = m_freq(acor_grid[i], acor_est[index_boot]) - acor_ecdf[i]
+	    }
+	
+	    mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+		mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+		acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+		acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+		acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+		acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
 	}
 	
 	temp=st_addvar("double", "mean_ecdf")
@@ -95,14 +122,27 @@ function m_neecdf(data, acov_order, acor_order) {
 	temp=st_addvar("double", "acov_grid")
 	temp=st_addvar("double", "acor_grid")
 	
+	temp=st_addvar("double", "mean_LCI")
+    temp=st_addvar("double", "acov_LCI")
+    temp=st_addvar("double", "acor_LCI")
+    temp=st_addvar("double", "mean_UCI")
+	temp=st_addvar("double", "acov_UCI")
+	temp=st_addvar("double", "acor_UCI")
+	
     st_addobs(max((0,grid  - st_nobs())))
     st_store(.,"mean_ecdf", mean_ecdf\J(st_nobs()-rows(mean_ecdf),1,.))
     st_store(.,"acov_ecdf", acov_ecdf\J(st_nobs()-rows(acov_ecdf),1,.))
     st_store(.,"acor_ecdf", acor_ecdf\J(st_nobs()-rows(acor_ecdf),1,.))
-	
     st_store(.,"mean_grid", mean_grid\J(st_nobs()-rows(mean_grid),1,.))
 	st_store(.,"acov_grid", acov_grid\J(st_nobs()-rows(acov_grid),1,.))
     st_store(.,"acor_grid", acor_grid\J(st_nobs()-rows(acor_grid),1,.))
+	
+	st_store(.,"mean_LCI", mean_LCI\J(st_nobs()-rows(mean_LCI),1,.))
+    st_store(.,"acov_LCI", acov_LCI\J(st_nobs()-rows(acov_LCI),1,.))
+    st_store(.,"acor_LCI", acor_LCI\J(st_nobs()-rows(acor_LCI),1,.))
+	st_store(.,"mean_UCI", mean_UCI\J(st_nobs()-rows(mean_UCI),1,.))
+    st_store(.,"acov_UCI", acov_UCI\J(st_nobs()-rows(acov_UCI),1,.))
+    st_store(.,"acor_UCI", acor_UCI\J(st_nobs()-rows(acor_UCI),1,.))
 }
 
 
@@ -143,10 +183,10 @@ function hpjecdfest2(x, X, X1, X2, X3, X4) {
     return(hpjest)
 }
 
-function m_hpjecdf(data, acov_order, acor_order) {
+function m_hpjecdf(data, acov_order, acor_order, B) {
     N = rows(data)
 	S = cols(data)
-	grid = 400
+	grid = 100
 
 	if (mod(S,2)==0) {
 	    mean_est = J(N, 1, 0)
@@ -191,14 +231,50 @@ function m_hpjecdf(data, acov_order, acor_order) {
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
 		
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+		
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
+		
 		for (i=1; i<= grid; i++){
 		    mean_ecdf[i] = hpjecdfest1(mean_grid[i], mean_est, mean_est1, mean_est2)
 			acov_ecdf[i] = hpjecdfest1(acov_grid[i], acov_est, acov_est1, acov_est2)
 			acor_ecdf[i] = hpjecdfest1(acor_grid[i], acor_est, acor_est1, acor_est2)
-		}
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+			
+			estimate_boot = J(B, 3, 0)
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = hpjecdfest1(mean_grid[i], mean_est[index_boot], mean_est1[index_boot], mean_est2[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = hpjecdfest1(acov_grid[i], acov_est[index_boot], acov_est1[index_boot], acov_est2[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = hpjecdfest1(acor_grid[i], acor_est[index_boot], acor_est1[index_boot], acor_est2[index_boot]) - acor_ecdf[i]
+			}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
+		
 	}	
 	else{
 	    mean_est = J(N, 1, 0)
@@ -257,15 +333,49 @@ function m_hpjecdf(data, acov_order, acor_order) {
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
 		
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
+		
 		for (i=1; i<= grid; i++){
 		    mean_ecdf[i] = hpjecdfest2(mean_grid[i], mean_est, mean_est1, mean_est2, mean_est3, mean_est4)
 			acov_ecdf[i] = hpjecdfest2(acov_grid[i], acov_est, acov_est1, acov_est2, acov_est3, acov_est4)
-			acor_ecdf[i] = hpjecdfest2(acor_grid[i], acor_est, acor_est1, acor_est2, acor_est3, acov_est4)
-		}
+			acor_ecdf[i] = hpjecdfest2(acor_grid[i], acor_est, acor_est1, acor_est2, acor_est3, acor_est4)
+			
+			estimate_boot = J(B, 3, 0)
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = hpjecdfest2(mean_grid[i], mean_est[index_boot], mean_est1[index_boot], mean_est2[index_boot], mean_est3[index_boot], mean_est4[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = hpjecdfest2(acov_grid[i], acov_est[index_boot], acov_est1[index_boot], acov_est2[index_boot], acov_est3[index_boot], acov_est4[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = hpjecdfest2(acor_grid[i], acor_est[index_boot], acor_est1[index_boot], acor_est2[index_boot], acor_est3[index_boot], acor_est4[index_boot]) - acor_ecdf[i]
+			}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
 		
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 	}
 	
 	temp=st_addvar("double", "mean_ecdf")
@@ -275,14 +385,27 @@ function m_hpjecdf(data, acov_order, acor_order) {
 	temp=st_addvar("double", "acov_grid")
 	temp=st_addvar("double", "acor_grid")
 	
+	temp=st_addvar("double", "mean_LCI")
+    temp=st_addvar("double", "acov_LCI")
+    temp=st_addvar("double", "acor_LCI")
+    temp=st_addvar("double", "mean_UCI")
+	temp=st_addvar("double", "acov_UCI")
+	temp=st_addvar("double", "acor_UCI")
+	
     st_addobs(max((0,grid  - st_nobs())))
     st_store(.,"mean_ecdf", mean_ecdf\J(st_nobs()-rows(mean_ecdf),1,.))
     st_store(.,"acov_ecdf", acov_ecdf\J(st_nobs()-rows(acov_ecdf),1,.))
     st_store(.,"acor_ecdf", acor_ecdf\J(st_nobs()-rows(acor_ecdf),1,.))
-	
     st_store(.,"mean_grid", mean_grid\J(st_nobs()-rows(mean_grid),1,.))
 	st_store(.,"acov_grid", acov_grid\J(st_nobs()-rows(acov_grid),1,.))
     st_store(.,"acor_grid", acor_grid\J(st_nobs()-rows(acor_grid),1,.))
+	
+	st_store(.,"mean_LCI", mean_LCI\J(st_nobs()-rows(mean_LCI),1,.))
+    st_store(.,"acov_LCI", acov_LCI\J(st_nobs()-rows(acov_LCI),1,.))
+    st_store(.,"acor_LCI", acor_LCI\J(st_nobs()-rows(acor_LCI),1,.))
+	st_store(.,"mean_UCI", mean_UCI\J(st_nobs()-rows(mean_UCI),1,.))
+    st_store(.,"acov_UCI", acov_UCI\J(st_nobs()-rows(acov_UCI),1,.))
+    st_store(.,"acor_UCI", acor_UCI\J(st_nobs()-rows(acor_UCI),1,.))
 }
 
 // 2.3. Third-Order-Jackknife
@@ -570,10 +693,10 @@ function tojecdfest5(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37
 }
 
 
-function m_tojecdf(data, acov_order, acor_order) {
+function m_tojecdf(data, acov_order, acor_order, B) {
     N = rows(data)
 	S = cols(data)
-	grid = 400
+	grid = 100
 	
 	mean_est = J(N,1,0)
 	acov_est = J(N,1,0)
@@ -642,14 +765,52 @@ function m_tojecdf(data, acov_order, acor_order) {
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
 		
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
+		
 		for (i = 1; i <= grid; i++) {
 			mean_ecdf[i] = tojecdfest0(mean_grid[i], mean_est, mean_est21, mean_est22, mean_est31, mean_est32, mean_est33)
 			acov_ecdf[i] = tojecdfest0(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33)
 			acor_ecdf[i] = tojecdfest0(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33)
-		}   
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+			
+			estimate_boot = J(B, 3, 0)
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = tojecdfest0(mean_grid[i], mean_est[index_boot], mean_est21[index_boot], mean_est22[index_boot], mean_est31[index_boot], mean_est32[index_boot], mean_est33[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = tojecdfest0(acov_grid[i], acov_est[index_boot], acov_est21[index_boot], acov_est22[index_boot], acov_est31[index_boot], acov_est32[index_boot], acov_est33[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = tojecdfest0(acor_grid[i], acor_est[index_boot], acor_est21[index_boot], acor_est22[index_boot], acor_est31[index_boot], acor_est32[index_boot], acor_est33[index_boot]) - acor_ecdf[i]
+				}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 		
 	} else if (mod(S,6)==1){
 
@@ -766,16 +927,54 @@ function m_tojecdf(data, acov_order, acor_order) {
 	    mean_ecdf = J(grid, 1, 0)
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
+		   
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
 		
 		for (i = 1; i <= grid; i++) {
 			mean_ecdf[i] = tojecdfest1(mean_grid[i], mean_est, mean_est21, mean_est22, mean_est23, mean_est24, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39)
-			acov_ecdf[i] = tojecdfest1(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39)
+			acov_ecdf[i] = tojecdfest1(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39)
 			acor_ecdf[i] = tojecdfest1(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39)
-		}
-		   
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+		
+			estimate_boot = J(B, 3, 0)
+			
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = tojecdfest1(mean_grid[i], mean_est[index_boot], mean_est21[index_boot], mean_est22[index_boot], mean_est23[index_boot], mean_est24[index_boot], mean_est31[index_boot], mean_est32[index_boot], mean_est33[index_boot], mean_est34[index_boot], mean_est35[index_boot], mean_est36[index_boot], mean_est37[index_boot], mean_est38[index_boot], mean_est39[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = tojecdfest1(acov_grid[i], acov_est[index_boot], acov_est21[index_boot], acov_est22[index_boot], acov_est23[index_boot], acov_est24[index_boot], acov_est31[index_boot], acov_est32[index_boot], acov_est33[index_boot], acov_est34[index_boot], acov_est35[index_boot], acov_est36[index_boot], acov_est37[index_boot], acov_est38[index_boot], acov_est39[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = tojecdfest1(acor_grid[i], acor_est[index_boot], acor_est21[index_boot], acor_est22[index_boot], acor_est23[index_boot], acor_est24[index_boot], acor_est31[index_boot], acor_est32[index_boot], acor_est33[index_boot], acor_est34[index_boot], acor_est35[index_boot], acor_est36[index_boot], acor_est37[index_boot], acor_est38[index_boot], acor_est39[index_boot]) - acor_ecdf[i]
+				}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 		
 	} else if (mod(S,6)==2){
     
@@ -879,16 +1078,54 @@ function m_tojecdf(data, acov_order, acor_order) {
 	    mean_ecdf = J(grid, 1, 0)
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
+		   
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
 		
 		for (i = 1; i <= grid; i++) {
 			mean_ecdf[i] = tojecdfest2(mean_grid[i], mean_est, mean_est21, mean_est22, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39)
 			acov_ecdf[i] = tojecdfest2(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39)
 			acor_ecdf[i] = tojecdfest2(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39)
-		}
-		   
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+		
+			estimate_boot = J(B, 3, 0)
+			
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = tojecdfest2(mean_grid[i], mean_est[index_boot], mean_est21[index_boot], mean_est22[index_boot], mean_est31[index_boot], mean_est32[index_boot], mean_est33[index_boot], mean_est34[index_boot], mean_est35[index_boot], mean_est36[index_boot], mean_est37[index_boot], mean_est38[index_boot], mean_est39[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = tojecdfest2(acov_grid[i], acov_est[index_boot], acov_est21[index_boot], acov_est22[index_boot], acov_est31[index_boot], acov_est32[index_boot], acov_est33[index_boot], acov_est34[index_boot], acov_est35[index_boot], acov_est36[index_boot], acov_est37[index_boot], acov_est38[index_boot], acov_est39[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = tojecdfest2(acor_grid[i], acor_est[index_boot], acor_est21[index_boot], acor_est22[index_boot], acor_est31[index_boot], acor_est32[index_boot], acor_est33[index_boot], acor_est34[index_boot], acor_est35[index_boot], acor_est36[index_boot], acor_est37[index_boot], acor_est38[index_boot], acor_est39[index_boot]) - acor_ecdf[i]
+				}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 		
 	} else if (mod(S,6) == 3) {
     
@@ -963,16 +1200,54 @@ function m_tojecdf(data, acov_order, acor_order) {
 	    mean_ecdf = J(grid, 1, 0)
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
+		   
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
 		
 		for (i = 1; i <= grid; i++) {
 			mean_ecdf[i] = tojecdfest3(mean_grid[i], mean_est, mean_est21, mean_est22, mean_est23, mean_est24, mean_est31, mean_est32, mean_est33)
-			acov_ecdf[i] = tojecdfest3(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33)
+			acov_ecdf[i] = tojecdfest3(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33)
 			acor_ecdf[i] = tojecdfest3(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33)
-		}
-		   
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+		
+			estimate_boot = J(B, 3, 0)
+			
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = tojecdfest3(mean_grid[i], mean_est[index_boot], mean_est21[index_boot], mean_est22[index_boot], mean_est23[index_boot], mean_est24[index_boot], mean_est31[index_boot], mean_est32[index_boot], mean_est33[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = tojecdfest3(acov_grid[i], acov_est[index_boot], acov_est21[index_boot], acov_est22[index_boot], acov_est23[index_boot], acov_est24[index_boot], acov_est31[index_boot], acov_est32[index_boot], acov_est33[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = tojecdfest3(acor_grid[i], acor_est[index_boot], acor_est21[index_boot], acor_est22[index_boot], acor_est23[index_boot], acor_est24[index_boot], acor_est31[index_boot], acor_est32[index_boot], acor_est33[index_boot]) - acor_ecdf[i]
+				}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 
 	} else if (mod(S,6)==4) {
 
@@ -1076,15 +1351,53 @@ function m_tojecdf(data, acov_order, acor_order) {
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
 		
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
+		
 		for (i = 1; i <= grid; i++) {
 			mean_ecdf[i] = tojecdfest4(mean_grid[i], mean_est, mean_est21, mean_est22, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39)
 			acov_ecdf[i] = tojecdfest4(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39)
 			acor_ecdf[i] = tojecdfest4(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39)
-		}
-		   
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+		
+			estimate_boot = J(B, 3, 0)
+			
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = tojecdfest4(mean_grid[i], mean_est[index_boot], mean_est21[index_boot], mean_est22[index_boot], mean_est31[index_boot], mean_est32[index_boot], mean_est33[index_boot], mean_est34[index_boot], mean_est35[index_boot], mean_est36[index_boot], mean_est37[index_boot], mean_est38[index_boot], mean_est39[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = tojecdfest4(acov_grid[i], acov_est[index_boot], acov_est21[index_boot], acov_est22[index_boot], acov_est31[index_boot], acov_est32[index_boot], acov_est33[index_boot], acov_est34[index_boot], acov_est35[index_boot], acov_est36[index_boot], acov_est37[index_boot], acov_est38[index_boot], acov_est39[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = tojecdfest4(acor_grid[i], acor_est[index_boot], acor_est21[index_boot], acor_est22[index_boot], acor_est31[index_boot], acor_est32[index_boot], acor_est33[index_boot], acor_est34[index_boot], acor_est35[index_boot], acor_est36[index_boot], acor_est37[index_boot], acor_est38[index_boot], acor_est39[index_boot]) - acor_ecdf[i]
+				}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 		
 	} else {
 
@@ -1202,32 +1515,83 @@ function m_tojecdf(data, acov_order, acor_order) {
 	    acov_ecdf = J(grid, 1, 0)
 	    acor_ecdf = J(grid, 1, 0)
 		
+		mean_UCI = J(grid, 1, 0)
+		acov_UCI = J(grid, 1, 0)
+		acor_UCI = J(grid, 1, 0)
+	
+		mean_LCI = J(grid, 1, 0)
+		acov_LCI = J(grid, 1, 0)
+		acor_LCI = J(grid, 1, 0)
+		
 		for (i = 1; i <= grid; i++) {
 			mean_ecdf[i] = tojecdfest5(mean_grid[i], mean_est, mean_est21, mean_est22, mean_est23, mean_est24, mean_est31, mean_est32, mean_est33, mean_est34, mean_est35, mean_est36, mean_est37, mean_est38, mean_est39)
-			acov_ecdf[i] = tojecdfest5(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39)
+			acov_ecdf[i] = tojecdfest5(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39)
 			acor_ecdf[i] = tojecdfest5(acor_grid[i], acor_est, acor_est21, acor_est22, acor_est23, acor_est24, acor_est31, acor_est32, acor_est33, acor_est34, acor_est35, acor_est36, acor_est37, acor_est38, acor_est39)
-		}
-		   
-		mean_ecdf = sort(mean_ecdf, 1)
-		acov_ecdf = sort(acov_ecdf, 1)
-		acor_ecdf = sort(acor_ecdf, 1)
+		
+			estimate_boot = J(B, 3, 0)
+			
+	        for (b = 1; b <= B; b++) {
+		        index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
+		        estimate_boot[b,1] = tojecdfest5(mean_grid[i], mean_est[index_boot], mean_est21[index_boot], mean_est22[index_boot], mean_est23[index_boot], mean_est24[index_boot], mean_est31[index_boot], mean_est32[index_boot], mean_est33[index_boot], mean_est34[index_boot], mean_est35[index_boot], mean_est36[index_boot], mean_est37[index_boot], mean_est38[index_boot], mean_est39[index_boot]) - mean_ecdf[i]
+			    estimate_boot[b,2] = tojecdfest5(acov_grid[i], acov_est[index_boot], acov_est21[index_boot], acov_est22[index_boot], acov_est23[index_boot], acov_est24[index_boot], acov_est31[index_boot], acov_est32[index_boot], acov_est33[index_boot], acov_est34[index_boot], acov_est35[index_boot], acov_est36[index_boot], acov_est37[index_boot], acov_est38[index_boot], acov_est39[index_boot]) - acov_ecdf[i]
+			    estimate_boot[b,3] = tojecdfest5(acor_grid[i], acor_est[index_boot], acor_est21[index_boot], acor_est22[index_boot], acor_est23[index_boot], acor_est24[index_boot], acor_est31[index_boot], acor_est32[index_boot], acor_est33[index_boot], acor_est34[index_boot], acor_est35[index_boot], acor_est36[index_boot], acor_est37[index_boot], acor_est38[index_boot], acor_est39[index_boot]) - acor_ecdf[i]
+				}
+	
+			mean_LCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.025)
+			mean_UCI[i] = mean_ecdf[i] + mm_quantile(estimate_boot[, 1], 1, 0.975)
+		
+			acov_LCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.025)
+			acov_UCI[i] = acov_ecdf[i] + mm_quantile(estimate_boot[, 2], 1, 0.975)
+		
+			acor_LCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.025)
+			acor_UCI[i] = acor_ecdf[i] + mm_quantile(estimate_boot[, 3], 1, 0.975)
+			}
+			
+		mean_data = sort((mean_ecdf, mean_LCI, mean_UCI), 1)
+		acov_data = sort((acov_ecdf, acov_LCI, acov_UCI), 1)
+		acor_data = sort((acor_ecdf, acor_LCI, acor_UCI), 1)
+		
+		mean_ecdf = mean_data[,1]
+		mean_LCI = mean_data[,2]
+		mean_UCI = mean_data[,3]
+		
+		acov_ecdf = acov_data[,1]
+		acov_LCI = acov_data[,2]
+		acov_UCI = acov_data[,3]
+		
+		acor_ecdf = acor_data[,1]
+		acor_LCI = acor_data[,2]
+		acor_UCI = acor_data[,3]
 	}
 	
-    temp=st_addvar("double", "mean_ecdf")
+	temp=st_addvar("double", "mean_ecdf")
     temp=st_addvar("double", "acov_ecdf")
     temp=st_addvar("double", "acor_ecdf")
     temp=st_addvar("double", "mean_grid")
 	temp=st_addvar("double", "acov_grid")
 	temp=st_addvar("double", "acor_grid")
 	
+	temp=st_addvar("double", "mean_LCI")
+    temp=st_addvar("double", "acov_LCI")
+    temp=st_addvar("double", "acor_LCI")
+    temp=st_addvar("double", "mean_UCI")
+	temp=st_addvar("double", "acov_UCI")
+	temp=st_addvar("double", "acor_UCI")
+	
     st_addobs(max((0,grid  - st_nobs())))
     st_store(.,"mean_ecdf", mean_ecdf\J(st_nobs()-rows(mean_ecdf),1,.))
     st_store(.,"acov_ecdf", acov_ecdf\J(st_nobs()-rows(acov_ecdf),1,.))
     st_store(.,"acor_ecdf", acor_ecdf\J(st_nobs()-rows(acor_ecdf),1,.))
-	
     st_store(.,"mean_grid", mean_grid\J(st_nobs()-rows(mean_grid),1,.))
 	st_store(.,"acov_grid", acov_grid\J(st_nobs()-rows(acov_grid),1,.))
     st_store(.,"acor_grid", acor_grid\J(st_nobs()-rows(acor_grid),1,.))
+	
+	st_store(.,"mean_LCI", mean_LCI\J(st_nobs()-rows(mean_LCI),1,.))
+    st_store(.,"acov_LCI", acov_LCI\J(st_nobs()-rows(acov_LCI),1,.))
+    st_store(.,"acor_LCI", acor_LCI\J(st_nobs()-rows(acor_LCI),1,.))
+	st_store(.,"mean_UCI", mean_UCI\J(st_nobs()-rows(mean_UCI),1,.))
+    st_store(.,"acov_UCI", acov_UCI\J(st_nobs()-rows(acov_UCI),1,.))
+    st_store(.,"acor_UCI", acor_UCI\J(st_nobs()-rows(acor_UCI),1,.))
 }
 
 
