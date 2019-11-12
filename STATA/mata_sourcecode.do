@@ -3684,7 +3684,7 @@ function nekdest (x, X, h) {
 function m_nekd (data, acov_order, acor_order){
     N = rows(data)
 	S = cols(data)
-	grid = 200
+	grid = 100
 	
 	mean_est = J(N,1,0)
 	acov_est = J(N,1,0)
@@ -3824,7 +3824,7 @@ function hpjkdest2 (x, X, X1, X2, X3, X4, h) {
 function m_hpjkd (data, acov_order, acor_order) {
     N = rows(data)
 	S = cols(data)
-	grid = 400
+	grid = 100
 	
 	mean_est = J(N,1,0)
 	acov_est = J(N,1,0)
@@ -4331,7 +4331,7 @@ function tojkdest5(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37, 
 function m_tojkd(data, acov_order, acor_order) {
     N = rows(data)
 	S = cols(data)
-	grid = 400
+	grid = 100
 	
 	mean_est = J(N,1,0)
 	acov_est = J(N,1,0)
