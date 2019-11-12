@@ -132,7 +132,7 @@ neecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
   if (ci){
     mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
     mean_plot <- mean_plot + geom_step(aes(x = mean_grid, y = ecdfest(mean_grid, mean_est)))
-    mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_ci[1,], ymax = mean_ci[2,]), alpha = 0.1)
+    mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_co[1,]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_ci[2,])), alpha = 0.1)
   }
   mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
   
@@ -144,7 +144,7 @@ neecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
   if (ci){
     acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
     acov_plot <- acov_plot + geom_step(aes(x = acov_grid, y = ecdfest(acov_grid, acov_est)))
-    acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_ci[1,], ymax = acov_ci[2,]), alpha = 0.1)
+    acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_ci[1,]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_ci[2,])), alpha = 0.1)
   }
   acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
@@ -155,7 +155,7 @@ neecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
   if (ci){
     acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
     acor_plot <- acor_plot + geom_step(aes(x = acor_grid, y = ecdfest(acor_grid, acor_est)))
-    acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_ci[1,], ymax = acor_ci[2,]), alpha = 0.1)
+    acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_ci[1,]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_ci[2,])), alpha = 0.1)
   }
   acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
 
