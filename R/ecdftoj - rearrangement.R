@@ -180,29 +180,26 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
       acor_plot <- acor_plot + geom_line() + xlim(min(acor_est), max(acor_est)) + ylim(0, 1)
       acor_plot <- acor_plot + labs(x = "x", y = "")
     }
-
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_toj <- cbind(tojecdfest0(x = mean_grid, X = mean_est, X21 = mean_est21, X22 = mean_est22, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33), t(mean_ci))
-      mean_toj <- mean_toj[order(mean_toj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_toj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_toj[, 2], ymax = mean_toj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_toj <- cbind(tojecdfest0(x = acov_grid, X = acov_est, X21 = acov_est21, X22 = acov_est22, X31 = acov_est31, X32 = acov_est32, X33 = acov_est33), t(acov_ci))
-      acov_toj <- acov_toj[order(acov_toj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_toj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_toj[, 2], ymax = acov_toj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_toj <- cbind(tojecdfest0(x = acor_grid, X = acor_est, X21 = acor_est21, X22 = acor_est22, X31 = acor_est31, X32 = acor_est32, X33 = acor_est33), t(acor_ci))
-      acor_toj <- acor_toj[order(acor_toj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_toj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_toj[, 2], ymax = acor_toj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
+
     # functions by TOJ estimation without rearrangement
     mean_func <- function(x) {
       tojecdfest0(x = mean_x, X = mean_est, X21 = mean_est21, X22 = mean_est22, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33)
@@ -376,23 +373,20 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_toj <- cbind(tojecdfest1(x = mean_grid, X = mean_est, X21 = mean_est21, X22 = mean_est22, X23 = mean_est23, X24 = mean_est24, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33, X34 = mean_est34, X35 = mean_est35, X36 = mean_est36, X37 = mean_est37, X38 = mean_est38, X39 = mean_est39), t(mean_ci))
-      mean_toj <- mean_toj[order(mean_toj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_toj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_toj[, 2], ymax = mean_toj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_toj <- cbind(tojecdfest1(x = acov_grid, X = acov_est, X21 = acov_est21, X22 = acov_est22, X23 = acov_est23, X24 = acov_est24, X31 = acov_est31, X32 = acov_est32, X33 = acov_est33, X34 = acov_est34, X35 = acov_est35, X36 = acov_est36, X37 = acov_est37, X38 = acov_est38, X39 = acov_est39), t(acov_ci))
-      acov_toj <- acov_toj[order(acov_toj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_toj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_toj[, 2], ymax = acov_toj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_toj <- cbind(tojecdfest1(x = acor_grid, X = acor_est, X21 = acor_est21, X22 = acor_est22, X23 = acor_est23, X24 = acor_est24, X31 = acor_est31, X32 = acor_est32, X33 = acor_est33, X34 = acor_est34, X35 = acor_est35, X36 = acor_est36, X37 = acor_est37, X38 = acor_est38, X39 = acor_est39), t(acor_ci))
-      acor_toj <- acor_toj[order(acor_toj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_toj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_toj[, 2], ymax = acor_toj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -562,23 +556,20 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_toj <- cbind(tojecdfest2(x = mean_grid, X = mean_est, X21 = mean_est21, X22 = mean_est22, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33, X34 = mean_est34, X35 = mean_est35, X36 = mean_est36, X37 = mean_est37, X38 = mean_est38, X39 = mean_est39), t(mean_ci))
-      mean_toj <- mean_toj[order(mean_toj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_toj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_toj[, 2], ymax = mean_toj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_toj <- cbind(tojecdfest2(x = acov_grid, X = acov_est, X21 = acov_est21, X22 = acov_est22, X31 = acov_est31, X32 = acov_est32, X33 = acov_est33, X34 = acov_est34, X35 = acov_est35, X36 = acov_est36, X37 = acov_est37, X38 = acov_est38, X39 = acov_est39), t(acov_ci))
-      acov_toj <- acov_toj[order(acov_toj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_toj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_toj[, 2], ymax = acov_toj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_toj <- cbind(tojecdfest2(x = acor_grid, X = acor_est, X21 = acor_est21, X22 = acor_est22, X31 = acor_est31, X32 = acor_est32, X33 = acor_est33, X34 = acor_est34, X35 = acor_est35, X36 = acor_est36, X37 = acor_est37, X38 = acor_est38, X39 = acor_est39), t(acor_ci))
-      acor_toj <- acor_toj[order(acor_toj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_toj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_toj[, 2], ymax = acor_toj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -728,27 +719,24 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
       acor_plot <- acor_plot + geom_line() + xlim(min(acor_est), max(acor_est)) + ylim(0, 1)
       acor_plot <- acor_plot + labs(x = "x", y = "")
     }
-   
+
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_toj <- cbind(tojecdfest3(x = mean_grid, X = mean_est, X21 = mean_est21, X22 = mean_est22, X23 = mean_est23, X24 = mean_est24, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33), t(mean_ci))
-      mean_toj <- mean_toj[order(mean_toj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_toj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_toj[, 2], ymax = mean_toj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_toj <- cbind(tojecdfest3(x = acov_grid, X = acov_est, X21 = acov_est21, X22 = acov_est22, X23 = acov_est23, X24 = acov_est24, X31 = acov_est31, X32 = acov_est32, X33 = acov_est33), t(acov_ci))
-      acov_toj <- acov_toj[order(acov_toj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_toj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_toj[, 2], ymax = acov_toj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_toj <- cbind(tojecdfest3(x = acor_grid, X = acor_est, X21 = acor_est21, X22 = acor_est22, X23 = acor_est23, X24 = acor_est24, X31 = acor_est31, X32 = acor_est32, X33 = acor_est33), t(acor_ci))
-      acor_toj <- acor_toj[order(acor_toj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_toj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_toj[, 2], ymax = acor_toj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -915,27 +903,24 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
       acor_plot <- acor_plot + geom_line() + xlim(min(acor_est), max(acor_est)) + ylim(0, 1)
       acor_plot <- acor_plot + labs(x = "x", y = "")
     }
-   
+  
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_toj <- cbind(tojecdfest4(x = mean_grid, X = mean_est, X21 = mean_est21, X22 = mean_est22, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33, X34 = mean_est34, X35 = mean_est35, X36 = mean_est36, X37 = mean_est37, X38 = mean_est38, X39 = mean_est39), t(mean_ci))
-      mean_toj <- mean_toj[order(mean_toj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_toj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_toj[, 2], ymax = mean_toj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_toj <- cbind(tojecdfest4(x = acov_grid, X = acov_est, X21 = acov_est21, X22 = acov_est22, X31 = acov_est31, X32 = acov_est32, X33 = acov_est33, X34 = acov_est34, X35 = acov_est35, X36 = acov_est36, X37 = acov_est37, X38 = acov_est38, X39 = acov_est39), t(acov_ci))
-      acov_toj <- acov_toj[order(acov_toj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_toj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_toj[, 2], ymax = acov_toj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_toj <- cbind(tojecdfest4(x = acor_grid, X = acor_est, X21 = acor_est21, X22 = acor_est22, X31 = acor_est31, X32 = acor_est32, X33 = acor_est33, X34 = acor_est34, X35 = acor_est35, X36 = acor_est36, X37 = acor_est37, X38 = acor_est38, X39 = acor_est39), t(acor_ci))
-      acor_toj <- acor_toj[order(acor_toj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_toj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_toj[, 2], ymax = acor_toj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -1109,27 +1094,24 @@ tojecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
       acor_plot <- acor_plot + geom_line() + xlim(min(acor_est), max(acor_est)) + ylim(0, 1)
       acor_plot <- acor_plot + labs(x = "x", y = "")
     }
-   
+
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_toj <- cbind(tojecdfest5(x = mean_grid, X = mean_est, X21 = mean_est21, X22 = mean_est22, X23 = mean_est23, X24 = mean_est24, X31 = mean_est31, X32 = mean_est32, X33 = mean_est33, X34 = mean_est34, X35 = mean_est35, X36 = mean_est36, X37 = mean_est37, X38 = mean_est38, X39 = mean_est39), t(mean_ci))
-      mean_toj <- mean_toj[order(mean_toj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_toj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_toj[, 2], ymax = mean_toj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_toj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_toj <- cbind(tojecdfest5(x = acov_grid, X = acov_est, X21 = acov_est21, X22 = acov_est22, X23 = acov_est23, X24 = acov_est24, X31 = acov_est31, X32 = acov_est32, X33 = acov_est33, X34 = acov_est34, X35 = acov_est35, X36 = acov_est36, X37 = acov_est37, X38 = acov_est38, X39 = acov_est39), t(acov_ci))
-      acov_toj <- acov_toj[order(acov_toj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_toj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_toj[, 2], ymax = acov_toj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_toj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
 
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_toj <- cbind(tojecdfest5(x = acor_grid, X = acor_est, X21 = acor_est21, X22 = acor_est22, X23 = acor_est23, X24 = acor_est24, X31 = acor_est31, X32 = acor_est32, X33 = acor_est33, X34 = acor_est34, X35 = acor_est35, X36 = acor_est36, X37 = acor_est37, X38 = acor_est38, X39 = acor_est39), t(acor_ci))
-      acor_toj <- acor_toj[order(acor_toj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_toj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_toj[, 2], ymax = acor_toj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_toj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 

@@ -154,8 +154,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_hpj <- cbind(hpjecdfest1(x = mean_grid, X = mean_est, X1 = mean_est1, X2 = mean_est2), t(mean_ci))
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_x), y = mean_hpj[, 1])))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_x), y = mean_hpj[, 2]), ymax = rearrangement(x = data.frame(x = mean_x), y = mean_hpj[, 3])), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_hpj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_hpj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_hpj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
     
@@ -170,8 +170,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_hpj <- cbind(hpjecdfest1(x = acov_grid, X = acov_est, X1 = acov_est1, X2 = acov_est2), t(acov_ci))
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_x), y = acov_hpj[, 1])))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_x), y = acov_hpj[, 2]), ymax = rearrangement(x = data.frame(x = acov_x), y = acov_hpj[, 3])), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_hpj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_hpj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_hpj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -186,8 +186,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_hpj <- cbind(hpjecdfest1(x = acor_grid, X = acor_est, X1 = acor_est1, X2 = acor_est2), t(acor_ci))
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_hpj <- rearrangement(x = data.frame(x = acor_x), y = acor_hpj[, 1])))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_hpj <- rearrangement(x = data.frame(x = acor_x), y = acor_hpj[, 2]), ymax = acor_hpj <- rearrangement(x = data.frame(x = acor_x), y = acor_hpj[, 3])), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_hpj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_hpj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_hpj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -311,9 +311,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       mean_plot <- ggplot(data = data.frame(x = mean_grid), aes(x = mean_grid))
       mean_hpj <- cbind(hpjecdfest2(x = mean_grid, X = mean_est, X1 = mean_est1, X2 = mean_est2, X3 = mean_est3, X4 = mean_est4), t(mean_ci))
-      mean_hpj <- mean_hpj[order(mean_hpj[,1]),]
-      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = mean_hpj[,1]))
-      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = mean_hpj[, 2], ymax = mean_hpj[, 3]), alpha = 0.1)
+      mean_plot <- mean_plot + geom_line(aes(x = mean_grid, y = rearrangement(x = data.frame(x = mean_grid), y = mean_hpj[, 1])))
+      mean_plot <- mean_plot + geom_ribbon(aes(x = mean_grid, ymin = rearrangement(x = data.frame(x = mean_grid), y = mean_hpj[, 2]), ymax = rearrangement(x = data.frame(x = mean_grid), y = mean_hpj[, 3])), alpha = 0.1)
       mean_plot <- mean_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
     
@@ -328,9 +327,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       acov_plot <- ggplot(data = data.frame(x = acov_grid), aes(x = acov_grid))
       acov_hpj <- cbind(hpjecdfest2(x = acov_grid, X = acov_est, X1 = acov_est1, X2 = acov_est2, X3 = acov_est3, X4 = acov_est4), t(acov_ci))
-      acov_hpj <- acov_hpj[order(acov_hpj[,1]),]
-      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = acov_hpj[,1]))
-      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = acov_hpj[, 2], ymax = acov_hpj[, 3]), alpha = 0.1)
+      acov_plot <- acov_plot + geom_line(aes(x = acov_grid, y = rearrangement(x = data.frame(x = acov_grid), y = acov_hpj[, 1])))
+      acov_plot <- acov_plot + geom_ribbon(aes(x = acov_grid, ymin = rearrangement(x = data.frame(x = acov_grid), y = acov_hpj[, 2]), ymax = rearrangement(x = data.frame(x = acov_grid), y = acov_hpj[, 3])), alpha = 0.1)
       acov_plot <- acov_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
@@ -345,9 +343,8 @@ hpjecdf <- function(data, acov_order = 0, acor_order = 1, R = 1000, ci = TRUE) {
     if (ci){
       acor_plot <- ggplot(data = data.frame(x = acor_grid), aes(x = acor_grid))
       acor_hpj <- cbind(hpjecdfest2(x = acor_grid, X = acor_est, X1 = acor_est1, X2 = acor_est2, X3 = acor_est3, X4 = acor_est4), t(acor_ci))
-      acor_hpj <- acor_hpj[order(acor_hpj[,1]),]
-      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = acor_hpj[,1]))
-      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = acor_hpj[, 2], ymax = acor_hpj[, 3]), alpha = 0.1)
+      acor_plot <- acor_plot + geom_line(aes(x = acor_grid, y = rearrangement(x = data.frame(x = acor_grid), y = acor_hpj[, 1])))
+      acor_plot <- acor_plot + geom_ribbon(aes(x = acor_grid, ymin = rearrangement(x = data.frame(x = acor_grid), y = acor_hpj[, 2]), ymax = rearrangement(x = data.frame(x = acor_grid), y = acor_hpj[, 3])), alpha = 0.1)
       acor_plot <- acor_plot + labs(x = "x", y = "") + ylim(0, 1)
     }
 
