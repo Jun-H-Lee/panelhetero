@@ -38,11 +38,11 @@
 {pstd}
 {cmd:phkd} performs kernel density estimation when the panel data exhibits heterogeneity across its cross-sectional units. 
 Densities of moments(mean, acov, acor) are calculated by usual kernel density estimation 
-using gaussian kernel with plug-in bandwidth on equally spaced grid of size 200.
+using gaussian kernel with plug-in bandwidth on equally spaced grid of size 100.
 
 {phang}
 Split-panel jackknife {cmd:method} like {it:naive, hpj, toj} are described in
-{browse "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3128885":{it:Kernel Estimation for Panel Data with Heterogeneous Dynamics}.}
+{browse "https://doi.org/10.1093/ectj/utz019":{it:Kernel Estimation for Panel Data with Heterogeneous Dynamics}.}
 
 {marker dependencies}
 {title:Dependencies}
