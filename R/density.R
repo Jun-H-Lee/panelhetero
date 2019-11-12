@@ -80,13 +80,6 @@ nekd <- function(data, acov_order = 0, acor_order = 1, mean_bw = NULL, acov_bw =
   acor_plot <- ggplot(data = data.frame(x = acor_lim), aes(x = x))
   acor_plot <- acor_plot + stat_function(fun = kdest, args = list(X = acor_est, h = acor_bw))
   acor_plot <- acor_plot + labs(x = "x", y = "")
-
-  
-  mean_plot_ci <- ggplot(data = data.frame(x = mean_lim), aes(x = x))
-  mean_plot_ci <- mean_plot + stat_function(fun = kdest, args = list(X = mean_est, h = mean_bw))
-  mean_plot_ci <- mean_plot + stat_function(fun = kdest - 1.96 * kdest_se, args = list(X = mean_est, h = mean_bw))
-  mean_plot_ci <- mean_plot + stat_function(fun = kdest + 1.96 * kdest_se, args = list(X = mean_est, h = mean_bw))
-  mean_plot_ci <- mean_plot + labs(x = "x", y = "")
  
   # functions
   mean_func <- function(x) {
@@ -107,7 +100,6 @@ nekd <- function(data, acov_order = 0, acor_order = 1, mean_bw = NULL, acov_bw =
   quantity <- cbind(mean_est, acov_est, acor_est)
   colnames(quantity) <- c("mean", "autocovariance", "autocorrelation")
   result <- list(mean = mean_plot, acov = acov_plot, acor = acor_plot,
-                 mean_ci = mean_plot_ci,
                  mean_func = mean_func, acov_func = acov_func, acor_func = acor_func,
                  bandwidth = bandwidth, quantity = quantity,
                  acov_order = acov_order, acor_order = acor_order, N = N, S = S)
@@ -135,21 +127,3 @@ kdest <- Vectorize(FUN = function(x, X, h) {
 
 }, vectorize.args = "x")
 
-#' computing standard error of kernel density estimate
-#'
-#' @param x point at which the density is estimated
-#' @param X vector of cross-sectional data
-#' @param h bandwidth
-#'
-kdest_se <- Vectorize(FUN = function(x, X, h) {
-  
-  # sample size
-  N <- length(X)
-
-  # standard error
-  k <- dnorm( (x - X) / h)
-  se <- sqrt((mean(k^2) - mean(k)^2) / (N * h^2))
-
-  return(se)
-
-}, vectorize.args = "x")
