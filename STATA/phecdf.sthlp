@@ -99,6 +99,6 @@ package. Type
 {marker DM1993}{...}
 {phang}
 Ryo Okui. and Takahide Yanagi. 2019.
-{browse "https://www.sciencedirect.com/science/article/pii/S0304407619301022?via%3Dihub":{it:Panel Data Analysis with Heterogeneous Dynamics}.}
+{browse "https://doi.org/10.1016/j.jeconom.2019.04.036":{it:Panel Data Analysis with Heterogeneous Dynamics}.}
 {it:Journal of Econometrics}.
 {p_end}

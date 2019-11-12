@@ -109,12 +109,12 @@ package. Type
 {marker OY2019}{...}
 {phang}
 Ryo Okui. and Takahide Yanagi. 2019.
-{browse "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3128885":{it:Kernel Estimation for Panel Data with Heterogeneous Dynamics}.}
-{it:Working Paper}.
+{browse "https://doi.org/10.1093/ectj/utz019":{it:Kernel Estimation for Panel Data with Heterogeneous Dynamics}.}
+{it:The Econometrics Journal}.
 
 {marker DM1993}{...}
 {phang}
 Ryo Okui. and Takahide Yanagi. 2019.
-{browse "https://www.sciencedirect.com/science/article/pii/S0304407619301022?via%3Dihub":{it:Panel Data Analysis with Heterogeneous Dynamics}.}
+{browse "https://doi.org/10.1016/j.jeconom.2019.04.036":{it:Panel Data Analysis with Heterogeneous Dynamics}.}
 {it:Journal of Econometrics}.
 {p_end}

@@ -1,8 +1,6 @@
 /* Stata function for 
-Ryo Okui and Takahide Yanagi. Kernel Estimation for Panel Data       
-   with Heterogeneous Dynamics. 2019.
 Ryo Okui and Takahide Yanagi. Panel Data Analysis with Heterogeneous 
-   Dynamics. 2019. */
+   Dynamics. 2019. Journal of Econometrics */
    
 /*
 Note : 

@@ -1,8 +1,8 @@
 /* Stata function for 
 Ryo Okui and Takahide Yanagi. Kernel Estimation for Panel Data       
-   with Heterogeneous Dynamics. 2019.
+   with Heterogeneous Dynamics. 2019. The Econometrics Journal.
 Ryo Okui and Takahide Yanagi. Panel Data Analysis with Heterogeneous 
-   Dynamics. 2019. */
+   Dynamics. 2019. Journal of Econometrics*/
    
 /*
 Note : 
@@ -114,24 +114,24 @@ program define phkd, eclass
 	        if (`acov_order' == 0){
 			    if("`ci'" == "on"){
 			        graph twoway rarea acov_UCI acov_LCI acov_grid, color(gs14) || line acov_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Variance") title("Kernel Density Estimation for Variance") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
+	                              xtitle("Variance") xlabel(minmax) title("Kernel Density Estimation for Variance") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
 	                graph rename vardest
 			    }
 			    else{
 			        graph twoway line acov_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Variance") title("Kernel Density Estimation for Variance")
+	                              xtitle("Variance") xlabel(minmax) title("Kernel Density Estimation for Variance")
 	                graph rename vardest
 			    }
 	        }
 	        else{
 			    if("`ci'" == "on"){
 			        graph twoway rarea acov_UCI acov_LCI acov_grid, color(gs14) || line acov_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Autocovariance") title("Kernel Density Estimation for Autocovariance of order `acov_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
+	                              xtitle("Autocovariance") xlabel(minmax) title("Kernel Density Estimation for Autocovariance of order `acov_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
 	                graph rename acovdest
 			    }
 			    else{
 			        graph twoway line acov_dest acov_grid, ytitle("Density") ///
-	                              xtitle("Autocovariance") title("Kernel Density Estimation for Autocovariance of order `acov_order'")
+	                              xtitle("Autocovariance") xlabel(minmax) title("Kernel Density Estimation for Autocovariance of order `acov_order'")
 	                graph rename acovdest
 			    }
 	        }
@@ -140,13 +140,13 @@ program define phkd, eclass
 		if ("`i'" == "acor"){
 			if("`ci'" == "on"){
 			    graph twoway rarea acor_UCI acor_LCI acor_grid, color(gs14) || line acor_dest acor_grid, ytitle("Density") ///
-	                              xtitle("Autocorrelation") title("Kernel Density Estimation for Autocorrelation of order `acor_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
+	                              xtitle("Autocorrelation") xlabel(minmax) title("Kernel Density Estimation for Autocorrelation of order `acor_order'") legend(cols(2) order(2 "point estimate" 1 "95% C.I." ))
 	            graph rename acordest
 			
 			}
 			else{
 			    graph twoway line acor_dest acor_grid, ytitle("Density") ///
-	                              xtitle("Autocorrelation") title("Kernel Density Estimation for Autocorrelation of order `acor_order'")
+	                              xtitle("Autocorrelation") xlabel(minmax) title("Kernel Density Estimation for Autocorrelation of order `acor_order'")
 	            graph rename acordest
 			}
 	    }

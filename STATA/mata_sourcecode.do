@@ -42,8 +42,8 @@ function mataacov (y, acov_order){
 
 // 1.2. Autocorrelation
 
-function mataacor (y, acov_order){
-	acor_est = mataacov(y, acov_order) / mataacov(y, 0)
+function mataacor (y, acor_order){
+	acor_est = mataacov(y, acor_order) / mataacov(y, 0)
 	return(acor_est)
 }
 
@@ -423,9 +423,6 @@ function m_hpjecdf(data, acov_order, acor_order, B) {
 
 function tojecdfest0(x, X, X21, X22, X31, X32, X33) {
 
-	// sample size
-    N = length(X)
-
 	// estimates
     est = m_freq(x, X)
     est21 = m_freq(x, X21)
@@ -466,9 +463,6 @@ function tojecdfest0(x, X, X21, X22, X31, X32, X33) {
 	X39 vector of one-third-panel cross-sectional data based on time series (2 * floor(T/3) + 2) ~ T
 */
 function tojecdfest1(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37, X38, X39) {
-
-	// sample size
-    N = length(X)
 
 	// estimates
 	est = m_freq(x, X)
@@ -518,9 +512,6 @@ function tojecdfest1(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37
 
 function tojecdfest2(x, X, X21, X22, X31, X32, X33, X34, X35, X36, X37, X38, X39) {
 
-	// sample size
-	N = length(X)
-
 	// estimates
 	est = m_freq(x, X)
 	est21 = m_freq(x, X21)
@@ -559,12 +550,8 @@ function tojecdfest2(x, X, X21, X22, X31, X32, X33, X34, X35, X36, X37, X38, X39
 	X31 vector of one-third-panel cross-sectional data based on time series 1 ~ T/3
 	X32 vector of one-third-panel cross-sectional data based on time series (T/3 + 1) ~ 2 * T/3
 	X33 vector of one-third-panel cross-sectional data based on time series 2 * T/3 + 1 ~ T
-	h bandwidth
 */
 function tojecdfest3(x, X, X21, X22, X23, X24, X31, X32, X33) {
-
-	// sample size
-    N = length(X)
 
 	// estimates
 	est = m_freq(x, X)
@@ -604,12 +591,8 @@ function tojecdfest3(x, X, X21, X22, X23, X24, X31, X32, X33) {
 	X37 vector of one-third-panel cross-sectional data based on time series 1 ~ ceiling(T/3)
 	X38 vector of one-third-panel cross-sectional data based on time series (ceiling(T/3) + 1) ~ (2 * floor(T/3) + 1)
 	X39 vector of one-third-panel cross-sectional data based on time series (2 * floor(T/3) + 2) ~ T
-	h bandwidth
 */
 function tojecdfest4(x, X, X21, X22, X31, X32, X33, X34, X35, X36, X37, X38, X39) {
-
-	// sample size
-	N = length(X)
 
 	// estimates
 	est = m_freq(x, X)
@@ -658,9 +641,6 @@ function tojecdfest4(x, X, X21, X22, X31, X32, X33, X34, X35, X36, X37, X38, X39
 	X39 vector of one-third-panel cross-sectional data based on time series (2 * ceiling(T/3) + 1) ~ T
 */
 function tojecdfest5(x, X, X21, X22, X23, X24, X31, X32, X33, X34, X35, X36, X37, X38, X39) {
-
-	// sample size
-	N = length(X)
 
 	// estimates
 	est = m_freq(x, X)
@@ -2012,6 +1992,7 @@ function m_hpjmoment(data, acov_order, acor_order, B){
 
 // 3.3. Third-Order-Jackknife Moment Estimation
 
+
 function tojmomentest0(quantity, indices){
 	mean_est = quantity[indices, 1]
 	mean_est21 = quantity[indices, 2]
@@ -2042,8 +2023,8 @@ function tojmomentest0(quantity, indices){
 	mean_mean33 = sum(mean_est33) / length(mean_est33)
 	
 	acov_mean = sum(acov_est) / length(acov_est)
-	acov_mean21 = sum(acov_est21) / length(acov_est22)
-	acov_mean22 = sum(acov_est22) / length(acov_est21)
+	acov_mean21 = sum(acov_est21) / length(acov_est21)
+	acov_mean22 = sum(acov_est22) / length(acov_est22)
 	acov_mean31 = sum(acov_est31) / length(acov_est31)
 	acov_mean32 = sum(acov_est32) / length(acov_est32)
 	acov_mean33 = sum(acov_est33) / length(acov_est33)
@@ -3065,7 +3046,7 @@ function m_tojmoment(data, acov_order, acor_order, B){
 		
 		for (b = 1; b <= B; b++) {
 			index_boot = rdiscrete(N, 1, J(N, 1, 1/N))
-			estimate_boot[b,] = tojmomentest1(equantity, index_boot)
+			estimate_boot[b,] = tojmomentest0(equantity, index_boot)
 		}
 		
 		se = sqrt(diagonal(variance(estimate_boot)))
@@ -3075,6 +3056,7 @@ function m_tojmoment(data, acov_order, acor_order, B){
 		ci_2 = 2 * estimate_value - quantile_boot_2
 		ci = (ci_1 \ ci_2)
 		result =  (estimate_value', se, ci')
+		
 	} else if (mod(S,6)==1){
 
     // split  panel data for T equivalent to 1 modulo 6
@@ -3659,7 +3641,7 @@ function m_tojmoment(data, acov_order, acor_order, B){
 	printf("Correlation between Autocovariance and Autocorelation   %f\n",estimate_value[9])
 	
 	printf("\n")
-    printf("%f %% Confidence Intervals for Moments.\n", level*100)
+    printf("%f %% Confidence Intervals for Moments.\n", 95)
     printf("Parameters                                              Low                   High\n")
     printf("__________________________________________________________________________________\n")
     printf("Mean of Mean                                            %f        %f\n",ci_1[1],ci_2[1])
@@ -3985,7 +3967,7 @@ function m_hpjkd (data, acov_order, acor_order) {
 			acor_dest[i] = k[1]
 		    acor_se[i] = k[2]
 		    acor_LCI[i] = max((0,acor_dest[i] - 1.96 * acor_se[i]))
-		    acor_UCI[i] = max((acor_dest[i] + 1.96 * acor_se[i]))
+		    acor_UCI[i] = max((0,acor_dest[i] + 1.96 * acor_se[i]))
 			acor_dest[i] = max((0,acor_dest[i]))
 	    }  
 	}
@@ -4040,27 +4022,23 @@ function tojkdest0(x, X, X21, X22, X31, X32, X33, h) {
     N = length(X)
 
 	// estimates
-    est = sum(normalden( (x :- X) / h)) /  (N * h)
+	est = sum(normalden( (x :- X) / h)) /  (N * h)
+	est21 = sum(normalden( (x :- X21) / h)) /  (N * h)
+	est22 = sum(normalden( (x :- X22) / h)) /  (N * h)
+	est31 = sum(normalden( (x :- X31) / h)) /  (N * h)
+	est32 = sum(normalden( (x :- X32) / h)) /  (N * h)
+	est33 = sum(normalden( (x :- X33) / h)) /  (N * h)
+	
 	k = normalden((x :- X)/h)
-	
-    est21 = sum(dnorm( (x :- X21) / h)) /  (N * h)
-    k21 = normalden((x :- X21)/h)
-	
-	est22 = sum(dnorm( (x :- X22) / h)) /  (N * h)
-    k22 = normalden((x :- X22)/h)
-	
-	est31 = sum(dnorm( (x :- X31) / h)) /  (N * h)
-    k31 = normalden((x :- X31)/h)
-	
-	est32 = sum(dnorm( (x :- X32) / h)) /  (N * h)
-    k32 = normalden((x :- X32)/h)
-	
-	est33 = sum(dnorm( (x :- X33) / h)) /  (N * h)
+	k21 = normalden((x :- X21)/h)
+	k22 = normalden((x :- X22)/h)
+	k31 = normalden((x :- X31)/h)
+	k32 = normalden((x :- X32)/h)
 	k33 = normalden((x :- X33)/h)
 	
 	// TOJ estimate
     tojest = 3.536 * est - 4.072 * (est21 + est22) / 2 + 1.536 * (est31 + est32 + est33) / 3
-	kest = 3.536 * k - 4.072 * (k21 + k22) / 2 + 1.536 * (est31 + est32 + est33) / 3
+	kest = 3.536 * k - 4.072 * (k21 + k22) / 2 + 1.536 * (k31 + k32 + k33) / 3
 	se = sqrt((1 / (N - 1)) * ((1 / (N * h^2)) * sum(kest:^2) - tojest^2))
   
   return((tojest, se))
@@ -4770,7 +4748,7 @@ function m_tojkd(data, acov_order, acor_order) {
 		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
 			mean_dest[i] = max((0,mean_dest[i]))
 			
-			k = tojkdest3(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_bw)
+			k = tojkdest3(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
@@ -5010,7 +4988,7 @@ function m_tojkd(data, acov_order, acor_order) {
 		    mean_UCI[i] = max((0,mean_dest[i] + 1.96 * mean_se[i]))
 			mean_dest[i] = max((0,mean_dest[i]))
 			
-			k = tojkdest5(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est24, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
+			k = tojkdest5(acov_grid[i], acov_est, acov_est21, acov_est22, acov_est23, acov_est24, acov_est31, acov_est32, acov_est33, acov_est34, acov_est35, acov_est36, acov_est37, acov_est38, acov_est39, acov_bw)
 			acov_dest[i] = k[1]
 		    acov_se[i] = k[2]
 		    acov_LCI[i] = max((0,acov_dest[i] - 1.96 * acov_se[i]))
